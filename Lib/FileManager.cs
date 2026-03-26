@@ -2,35 +2,49 @@
 {
     public class FileManager
     {
-        public void ApplyPreset(Preset preset, string gtaPath, string libraryPath)
+        public void ApplyPreset(Preset newPreset, Preset oldPreset, string gtaPath, string libraryPath)
         {
-            string presetPath = Path.Combine(libraryPath, preset.Name);
-
-            if (!Directory.Exists(presetPath))
-                throw new Exception("Preset folder not found");
-
-            string[] extensions = { "*.asi", "*.dll", "*.ini", "*.json" };
-
-            foreach (var ext in extensions)
+            if (oldPreset != null)
             {
-                foreach (var file in Directory.GetFiles(gtaPath, ext))
-                    File.Delete(file);
+                string oldPresetPath = Path.Combine(libraryPath, oldPreset.Name);
+                if (Directory.Exists(oldPresetPath))
+                {
+                    var oldFiles = Directory.GetFiles(oldPresetPath)
+                        .Select(Path.GetFileName);
+
+                    foreach (var fileName in oldFiles)
+                    {
+                        string target = Path.Combine(gtaPath, fileName);
+                        if (File.Exists(target))
+                        {
+                            File.Delete(target);
+                        }
+                    }
+
+                    string oldScripts = Path.Combine(oldPresetPath, "scripts");
+                    string gtaScripts = Path.Combine(gtaPath, "scripts");
+                    if (Directory.Exists(oldScripts) && Directory.Exists(gtaScripts))
+                    {
+                        Directory.Delete(oldScripts);
+                    }
+                }
             }
 
-            string scriptsPath = Path.Combine(gtaPath, "scripts");
-            if (Directory.Exists(scriptsPath))
-                Directory.Delete(scriptsPath, true);
+            string newPresetPath = Path.Combine(libraryPath, newPreset.Name);
+            if (!Directory.Exists(newPresetPath)) 
+                throw new Exception("Preset directory does not exist.");
 
-            foreach (var file in Directory.GetFiles(presetPath))
+            foreach (var file in Directory.GetFiles(newPresetPath))
             {
                 string dest = Path.Combine(gtaPath, Path.GetFileName(file));
                 File.Copy(file, dest, true);
             }
 
-            string scriptsSource = Path.Combine(presetPath, "scripts");
+            string scriptsSource = Path.Combine(newPresetPath, "scripts");
+            string scriptsDest = Path.Combine(gtaPath, "scripts");
             if (Directory.Exists(scriptsSource))
             {
-                CopyDirectory(scriptsSource, scriptsPath);
+                CopyDirectory(scriptsSource, scriptsDest);
             }
         }
 

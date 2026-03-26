@@ -290,7 +290,7 @@ namespace VModManager
 
             try
             {
-                fileManager.ApplyPreset(preset, settings.GtaPath, settings.LibraryPath);
+                fileManager.ApplyPreset(preset, activePreset, settings.GtaPath, settings.LibraryPath);
 
                 activePreset = preset;
                 lblActivePreset.Text = $"Active: {preset.Name}";
