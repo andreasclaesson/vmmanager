@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../VModUpdater/VModUpdater.csproj" Id="5ee49ade-a496-47eb-a737-fa5cf516ecd7" />
+  <Project Path="VModManager.csproj" />
+</Solution>
