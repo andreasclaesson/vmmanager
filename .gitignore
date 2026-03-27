@@ -416,3 +416,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# VModUpdater (shouldn't be on github)
+/VModUpdater.exe
