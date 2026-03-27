@@ -20,6 +20,7 @@ namespace VModManager
 
             txtGTAFolder.Text = settings.GtaPath ?? "";
             txtLibrary.Text = settings.LibraryPath ?? "";
+            lblVersionText.Text = $"Version: {AppVersion.Version}";
 
             var skinManager = MaterialSkinManager.Instance;
             skinManager.EnforceBackcolorOnAllComponents = true;
@@ -77,30 +78,48 @@ namespace VModManager
             if (MessageBox.Show($"Update {result.version} found. Install?",
                 "Update", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+
                 await DownloadAndRunUpdater(result.url);
             }
         }
 
         private async Task DownloadAndRunUpdater(string url)
         {
-            string tempZip = Path.Combine(Path.GetTempPath(), "vmod_update.zip");
+            string tempZip = Path.Combine(Path.GetTempPath(), $"vmod_update_{Guid.NewGuid()}.zip");
 
             using var client = new HttpClient();
             var data = await client.GetByteArrayAsync(url);
             await File.WriteAllBytesAsync(tempZip, data);
 
-            string appDir = AppDomain.CurrentDomain.BaseDirectory;
+            string appDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
 
             string updaterPath = Path.Combine(appDir, "VModUpdater.exe");
+
+            if (!File.Exists(updaterPath))
+            {
+                MessageBox.Show("Updater not found!");
+                return;
+            }
 
             var psi = new ProcessStartInfo
             {
                 FileName = updaterPath,
-                Arguments = $"\"{tempZip}\" \"{appDir}\" \"VModManager.exe\"",
-                UseShellExecute = true
+                UseShellExecute = false
             };
+            psi.ArgumentList.Add(tempZip);
+            psi.ArgumentList.Add(appDir);
+            psi.ArgumentList.Add("VModManager.exe");
+            psi.ArgumentList.Add(Environment.ProcessId.ToString());
 
-            Process.Start(psi);
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to start updater:\n{ex}");
+                return;
+            }
 
             Application.Exit();
         }

@@ -28,6 +28,7 @@
             btnSave = new MaterialSkin.Controls.MaterialButton();
             pnlPaths = new Panel();
             btnCheckUpdates = new MaterialSkin.Controls.MaterialButton();
+            lblVersionText = new MaterialSkin.Controls.MaterialLabel();
             pnlPaths.SuspendLayout();
             SuspendLayout();
             // 
@@ -160,6 +161,7 @@
             // 
             // btnCheckUpdates
             // 
+            btnCheckUpdates.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btnCheckUpdates.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             btnCheckUpdates.Depth = 0;
             btnCheckUpdates.HighEmphasis = true;
@@ -176,9 +178,21 @@
             btnCheckUpdates.UseAccentColor = false;
             btnCheckUpdates.Click += btnCheckUpdates_Click;
             // 
+            // lblVersionText
+            // 
+            lblVersionText.Depth = 0;
+            lblVersionText.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            lblVersionText.Location = new Point(187, 208);
+            lblVersionText.MouseState = MaterialSkin.MouseState.HOVER;
+            lblVersionText.Name = "lblVersionText";
+            lblVersionText.Size = new Size(199, 22);
+            lblVersionText.TabIndex = 5;
+            lblVersionText.Text = "VModManager v[n/a]";
+            // 
             // SettingsForm
             // 
             ClientSize = new Size(584, 247);
+            Controls.Add(lblVersionText);
             Controls.Add(btnCheckUpdates);
             Controls.Add(pnlPaths);
             Controls.Add(btnSave);
@@ -192,5 +206,6 @@
         }
 
         private MaterialSkin.Controls.MaterialButton btnCheckUpdates;
+        private MaterialSkin.Controls.MaterialLabel lblVersionText;
     }
 }
